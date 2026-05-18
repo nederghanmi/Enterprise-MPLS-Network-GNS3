@@ -1,214 +1,336 @@
-# 🚀 Enterprise MPLS L3VPN Network (GNS3 Lab)
-
----
+# 🚀 Enterprise MPLS L3VPN & Security Infrastructure (GNS3 Lab)
 
 ## 📌 Project Description
 
-This project demonstrates the implementation of a complete Enterprise MPLS Layer 3 VPN (L3VPN) architecture using GNS3.
+This project demonstrates the implementation of a complete Enterprise MPLS Layer 3 VPN (L3VPN) and Security Infrastructure using GNS3, VMware and Cisco technologies.
 
-The network simulates a real-world service provider backbone delivering secure connectivity between multiple customer sites (HQ and Branches) using:
-
-- MPLS (LDP)
-- MP-BGP VPNv4
-- VRF (VPN_CYBER)
-- OSPF (Core + Customer)
-- VLANs, HSRP, EtherChannel
-- DHCP & Inter-VLAN Routing
+The environment simulates a real-world Service Provider backbone delivering secure connectivity between multiple customer sites (HQ and Branches) with high availability, redundancy, segmentation, monitoring and centralized security services.
 
 ---
 
-## 🧠 Architecture Overview
+# 🧠 Core Technologies Implemented
 
-### 🔹 Backbone (Provider Network)
+## 🔹 MPLS Backbone
 
-- OSPF Area 0 for core routing  
-- MPLS enabled on all core links  
-- LDP used for label distribution  
+* MPLS (LDP)
+* MP-BGP VPNv4
+* VRF Segmentation
+* OSPF Multi-Area Routing
+* PE / P Architecture
+
+## 🔹 Switching & High Availability
+
+* VLAN Segmentation
+* Inter-VLAN Routing
+* HSRP Redundancy
+* EtherChannel Aggregation
+* DHCP Services
+
+## 🔹 Security Infrastructure
+
+* Cisco ASA Firewalls
+* Active/Standby Failover
+* DMZ Architecture
+* ACL Security Policies
+* Secure Administrative Access
+
+## 🔹 Enterprise Services
+
+* WWW Server
+* DNS Server
+* SMTP Mail Server
+* Ubuntu DMZ Server
+
+## 🔹 Monitoring & AAA
+
+* Zabbix Monitoring Server
+* SNMPv3 Secure Monitoring
+* FreeRADIUS AAA Authentication
+
+## 🔹 Intrusion Prevention
+
+* IPS / Threat Detection Integration
+
+---
+
+# 🌐 Architecture Overview
+
+## 🔸 Provider Backbone
 
 Routers:
 
-- P1, P2 → MPLS forwarding only  
-- PE1, PE2 → VRF + MP-BGP  
-
----
-
-### 🔹 VPN Layer
-
-- VRF: VPN_CYBER  
-- RD: 100:3  
-- RT: 100:3  
-- MP-BGP AS: 100  
-
----
-
-### 🔹 Customer Sites
-
-#### 🏢 Headquarters (Siège)
-
-- VLAN 10 → 172.16.210.0/24  
-- VLAN 15 → 172.16.215.0/24  
-- VLAN 20 → 172.16.220.0/24  
+* P1
+* P2
+* PE1
+* PE2
 
 Features:
 
-- Inter-VLAN Routing (Layer 3 Switch)  
-- HSRP (Gateway Redundancy)  
-- EtherChannel (Link Aggregation)  
-- DHCP Service  
+* OSPF Area 0
+* MPLS forwarding
+* LDP label distribution
+* MP-BGP VPNv4 route exchange
 
 ---
 
-#### 🌍 Branch1
+# 🔐 VPN Layer
 
-- VLAN 201 → 172.16.201.0/24  
-- VLAN 202 → 172.16.202.0/24  
+## VRF Configuration
 
-- Router-on-a-Stick  
-- DHCP on router  
-- OSPF with PE  
+VRF:
 
----
-
-#### 🌍 Branch2
-
-- VLAN 203 → 172.16.203.0/24  
-- VLAN 204 → 172.16.204.0/24  
-
----
-
-## 🔄 Routing Design
-
-- OSPF Process 1 → CE ↔ PE  
-- OSPF Process 300 → VRF routing  
-- MP-BGP → VPNv4 route exchange  
-- Redistribution between OSPF and BGP  
-
----
-
-## 🧪 VERIFICATION RESULTS (REAL LAB)
-
-### 🔹 MPLS & BGP (PE2)
-
-```bash
-PE2# show ip bgp vpnv4 all summary
-
-Neighbor        AS     State/PfxRcd
-1.1.1.1         100    4
+```text
+VPN_CYBER
 ```
 
-✔ BGP session is UP and exchanging routes  
+Route Distinguisher:
 
----
-
-### 🔹 VRF Routing Table
-
-```bash
-PE2# show ip route vrf VPN_CYBER 172.16.204.0
-
-Routing entry for 172.16.204.0/24
-Known via "ospf 300"
-via 192.168.1.14
+```text
+100:3
 ```
 
-✔ Branch2 network successfully learned via MPLS VPN  
+Route Target:
 
----
-
-### 🔹 OSPF Neighbors (PE2)
-
-```bash
-Neighbor ID     State
-12.12.12.12     FULL
-22.22.22.22     FULL
+```text
+100:3
 ```
 
-✔ All CE neighbors are FULL  
+BGP Autonomous System:
+
+```text
+AS 100
+```
 
 ---
 
-### 🔹 MPLS LDP
+# 🏢 Headquarters (Siège)
 
-```bash
+## VLANs
+
+* VLAN 10 → 172.16.210.0/24
+* VLAN 15 → 172.16.215.0/24
+* VLAN 20 → 172.16.220.0/24
+
+## Features
+
+* Inter-VLAN Routing
+* HSRP Redundancy
+* EtherChannel
+* DHCP Services
+* AAA Authentication
+* SNMPv3 Monitoring
+
+---
+
+# 🌍 Branch1
+
+## Networks
+
+* VLAN 201 → 172.16.201.0/24
+* VLAN 202 → 172.16.202.0/24
+
+## Features
+
+* Router-on-a-Stick
+* DHCP
+* OSPF with PE router
+
+---
+
+# 🌍 Branch2
+
+## Networks
+
+* VLAN 203 → 172.16.203.0/24
+* VLAN 204 → 172.16.204.0/24
+
+---
+
+# 🛡️ Security & DMZ Architecture
+
+## ASA Failover
+
+The infrastructure includes two Cisco ASA Firewalls configured in:
+
+```text
+Active / Standby Failover
+```
+
+Features:
+
+* Stateful Failover
+* Redundant Security Gateway
+* DMZ Protection
+* Traffic Filtering
+* Secure Segmentation
+
+---
+
+# 🌐 DMZ Zone
+
+## DMZ Network
+
+```text
+172.16.255.0/25
+```
+
+## Hosted Services
+
+* WWW
+* DNS
+* SMTP
+
+The DMZ is connected redundantly to both ASA firewalls to ensure high availability and service continuity.
+
+---
+
+# 📊 Monitoring Infrastructure
+
+## Zabbix
+
+* SNMPv3 secure monitoring
+* Device supervision
+* Traffic & health monitoring
+* Alerting capabilities
+
+---
+
+# 🔑 AAA Infrastructure
+
+## FreeRADIUS
+
+Implemented centralized authentication for administrative access and secure device management.
+
+---
+
+# 🧪 VERIFICATION RESULTS
+
+## MPLS & BGP
+
+```cisco
+show ip bgp vpnv4 all summary
+```
+
+✔ VPNv4 sessions established successfully
+
+---
+
+## OSPF
+
+```cisco
+show ip ospf neighbor
+```
+
+✔ All neighbors in FULL state
+
+---
+
+## MPLS LDP
+
+```cisco
 show mpls ldp neighbor
-
-State: Oper
 ```
 
-✔ MPLS core is operational  
+✔ MPLS core operational
 
 ---
 
-### 🔹 HSRP (Redundancy)
+## HSRP
 
-```bash
+```cisco
 show standby brief
-
-Vl10 Active 172.16.210.1
-Vl15 Active 172.16.215.1
-Vl20 Active 172.16.220.1
 ```
 
-✔ Gateway redundancy working  
+✔ Gateway redundancy operational
 
 ---
 
-### 🔹 EtherChannel
+## EtherChannel
 
-```bash
+```cisco
 show etherchannel summary
-
-Po1(SU)  Et0/0(P) Et0/1(P)
 ```
 
-✔ Link aggregation active  
+✔ Link aggregation operational
 
 ---
 
-## 🧪 END-TO-END VALIDATION
+## ASA Failover
 
-- ✔ PC0 → Branch1 ✅  
-- ✔ PC0 → Branch2 ✅  
-- ✔ PC2 → HQ ✅  
-- ✔ Full connectivity between all sites  
+```cisco
+show failover
+```
 
----
-
-## ⚠️ Troubleshooting & Fixes
-
-During the project, several real issues were identified and resolved:
-
-- ❌ OSPF stuck in EXSTART → ✔ Fixed with `ip ospf mtu-ignore`  
-- ❌ Missing routes → ✔ Enabled `ip routing` on CE routers  
-- ❌ No connectivity → ✔ Fixed OSPF redistribution into BGP  
-- ❌ VLAN / trunk issues → ✔ Corrected native VLAN and allowed VLANs  
+✔ Active/Standby synchronization operational
 
 ---
 
-## 🛠️ Technologies Used
+# 🧪 End-to-End Validation
 
-- MPLS (LDP)  
-- MP-BGP (VPNv4)  
-- OSPF  
-- VRF (L3VPN)  
-- VLANs (802.1Q)  
-- HSRP  
-- EtherChannel  
-- DHCP  
-- GNS3  
+✔ HQ ↔ Branch1 Connectivity
+✔ HQ ↔ Branch2 Connectivity
+✔ MPLS VPN Reachability
+✔ DMZ Services Reachability
+✔ Redundancy Validation
+✔ Failover Validation
+✔ Monitoring & AAA Functional
 
 ---
 
-## 🎯 Skills Demonstrated
+# ⚠️ Troubleshooting & Real-World Fixes
 
-- Enterprise Network Design  
-- MPLS L3VPN Deployment  
-- Routing (OSPF + BGP)  
-- High Availability (HSRP)  
-- Switching & VLAN segmentation  
-- Advanced Troubleshooting  
+During the project, several complex infrastructure issues were identified and resolved:
+
+* OSPF adjacency stuck in EXSTART
+* MPLS route propagation issues
+* VRF route redistribution problems
+* VLAN / trunk inconsistencies
+* HSRP synchronization issues
+* VMware / GNS3 adapter conflicts
+* ASA failover synchronization problems
+* DMZ Layer2 connectivity debugging
+* SNMPv3 & AAA integration troubleshooting
 
 ---
 
-## 👨‍💻 Author
+# 🛠️ Technologies Used
 
-**Neder Ghanmi**
+* MPLS (LDP)
+* MP-BGP VPNv4
+* OSPF
+* VRF (L3VPN)
+* VLANs (802.1Q)
+* HSRP
+* EtherChannel
+* Cisco ASA
+* ACLs
+* DMZ
+* SNMPv3
+* Zabbix
+* FreeRADIUS
+* IPS
+* DHCP
+* GNS3
+* VMware
+* Ubuntu Server
+
+---
+
+# 🎯 Skills Demonstrated
+
+* Enterprise Network Design
+* MPLS L3VPN Deployment
+* Advanced Routing & Switching
+* High Availability Architectures
+* Enterprise Security Integration
+* Firewall Redundancy
+* DMZ Implementation
+* Monitoring & AAA Deployment
+* Infrastructure Troubleshooting
+* Network Security Engineering
+
+---
+
+# 👨‍💻 Author
+
+Neder Ghanmi
